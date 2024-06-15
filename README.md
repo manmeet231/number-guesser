@@ -40,7 +40,7 @@ To run this project on your local machine, follow these steps:
 Ensure you have a C compiler installed (like gcc).
 Compile the source code:
 ```bash
-   gcc -o number_guessing_game main.cpp -lSDL2
+    gcc -I src/include -L src/lib main.c -o number_guesser.exe -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 ```
 
 
@@ -49,7 +49,7 @@ Compile the source code:
 To start the game, run the compiled executable:
 
 ```bash
-   ./number_guessing_game
+   .\number_guesser.exe
 ```
 
 Follow the on-screen prompts to guess the number. The game will guide you with hints until you guess the correct number.
