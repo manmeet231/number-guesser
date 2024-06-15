@@ -6,11 +6,13 @@
 // Constants
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
-const int FONT_SIZE = 48;
+const int FONT_SIZE_ABOVE = 48;
+const int FONT_SIZE_BELOW = 24;
 const int MAX_INPUT_LENGTH = 100;
 
 // Function prototypes
 void renderText(SDL_Renderer* renderer, const char* text, int x, int y, TTF_Font* font, SDL_Color color);
+
 
 int main(int argc, char* argv[]) {
     // Initialize SDL
@@ -25,7 +27,6 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
-
     // Create a window
     SDL_Window* window = SDL_CreateWindow("SDL2 Window",
                                           SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -38,9 +39,19 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // Load a font
-    TTF_Font* font = TTF_OpenFont("assets/font.ttf", FONT_SIZE);
-    if (font == NULL) {
+    // Load a font for above text
+    TTF_Font* font_above = TTF_OpenFont("assets/font.ttf", FONT_SIZE_ABOVE);
+    if (font_above == NULL) {
+        printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
+        SDL_DestroyWindow(window);
+        TTF_Quit();
+        SDL_Quit();
+        return 1;
+    }
+    
+    // Load a font for below text
+    TTF_Font* font_below = TTF_OpenFont("assets/font.ttf", FONT_SIZE_BELOW);
+    if (font_above == NULL) {
         printf("Failed to load font! SDL_ttf Error: %s\n", TTF_GetError());
         SDL_DestroyWindow(window);
         TTF_Quit();
@@ -53,7 +64,7 @@ int main(int argc, char* argv[]) {
     if (renderer == NULL) {
         printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
-        TTF_CloseFont(font);
+        TTF_CloseFont(font_above);
         TTF_Quit();
         SDL_Quit();
         return 1;
@@ -90,15 +101,16 @@ int main(int argc, char* argv[]) {
         // Clear screen
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(renderer);
-
+        
         // Render text above the input box
         SDL_Color textColor = { 0, 0, 0, 255 };
-        renderText(renderer, "Enter Your Number!", 200, 100, font, textColor);
-        renderText(renderer, inputText, 200, 200, font, textColor);
+        renderText(renderer, "Enter Your Number!", 200, 100, font_above, textColor);
+        renderText(renderer, inputText, 200, 200, font_above, textColor);
 
         // Render text below the input box
         SDL_Color textColorBelow = { 0, 0, 0, 255 };
-        renderText(renderer, "The range is from one to 100.", 200, 300, font, textColorBelow);
+        const char* textBelow = "The range is from one to 100.";
+        renderText(renderer, textBelow , 240, 250, font_below, textColorBelow);
 
         // Draw input box
         SDL_Rect inputBox = { 190, 190, 400, 60 };
@@ -111,7 +123,7 @@ int main(int argc, char* argv[]) {
 
     // Clean up
     SDL_StopTextInput();
-    TTF_CloseFont(font);
+    TTF_CloseFont(font_below);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();
